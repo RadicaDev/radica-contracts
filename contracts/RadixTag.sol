@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title RadixTag
  * @author Francesco Laterza
- * @notice Contract implementation to manage Radix NFC tags
+ * @notice Contract implementation to manage Radix NFC tags (Demo)
  */
 contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
