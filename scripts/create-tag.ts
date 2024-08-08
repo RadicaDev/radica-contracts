@@ -79,6 +79,7 @@ async function createTag() {
         process.exit(0);
       } catch (error) {
         logger.error(`error writing data`, reader, error);
+        process.exit(-1);
       }
     });
 
@@ -89,6 +90,7 @@ async function createTag() {
 
     reader.on("error", (err: any) => {
       logger.error(`an error occurred`, reader, err);
+      process.exit(-1);
     });
 
     reader.on("end", () => {
@@ -99,6 +101,7 @@ async function createTag() {
 
   nfc.on("error", (err: any) => {
     console.log("an error occurred", err);
+    process.exit(-1);
   });
 }
 

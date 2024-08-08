@@ -83,6 +83,7 @@ async function verifyTag() {
 
     reader.on("error", (err: any) => {
       logger.error(`an error occurred`, reader, err);
+      process.exit(-1);
     });
 
     reader.on("end", () => {
@@ -93,6 +94,7 @@ async function verifyTag() {
 
   nfc.on("error", (err: any) => {
     console.log("an error occurred", err);
+    process.exit(-1);
   });
 }
 
