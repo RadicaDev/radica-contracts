@@ -5,7 +5,7 @@ import hre from "hardhat";
 import { Metadata } from "./tag-meta";
 import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
-async function createTag() {
+async function createTags() {
   console.log("Please connect a NFC reader...");
 
   const nfc = new NFC();
@@ -22,6 +22,19 @@ async function createTag() {
     reader.on("card", async () => {
       clearLines(1);
       logger.info(`card detected`, reader);
+
+      // check that the tag is initialized
+      try {
+        const data = await reader.read(0x4, 20);
+        if (data.toString("hex") !== "0".repeat(data.length * 2)) {
+          logger.error("Tag already initialized", reader);
+          console.log("Please remove the tag from the reader...");
+          return;
+        }
+      } catch (error) {
+        logger.error("Error reading data", reader, error);
+        process.exit(-1);
+      }
 
       // Generate Random Ethereum Account
       console.log("");
@@ -103,7 +116,7 @@ async function createTag() {
   });
 }
 
-createTag().catch((error) => {
+createTags().catch((error) => {
   console.error(error);
   process.exit(-1);
 });

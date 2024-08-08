@@ -4,7 +4,7 @@ import hre from "hardhat";
 import { getAddress } from "viem";
 import { Metadata } from "./tag-meta";
 
-async function verifyTag() {
+async function verifyTags() {
   console.log("Please connect a NFC reader...");
 
   const nfc = new NFC();
@@ -26,7 +26,8 @@ async function verifyTag() {
         const data = await reader.read(0x4, 20);
         if (data.toString("hex") === "0".repeat(data.length * 2)) {
           logger.error(`NFC tag is initialized.`, reader);
-          process.exit(-1);
+          console.log("Please remove the tag from the reader...");
+          return;
         }
 
         const tagAddr = getAddress(`0x${data.toString("hex")}`);
@@ -50,7 +51,8 @@ async function verifyTag() {
           const balance = await radixTag.read.balanceOf([tagAddr]);
           if (balance === 0n) {
             logger.error(`Tag NOT verified`);
-            process.exit(-1);
+            console.log("Please remove the tag from the reader...");
+            return;
           }
 
           const tokenId = await radixTag.read.tokenOfOwnerByIndex([
@@ -98,7 +100,7 @@ async function verifyTag() {
   });
 }
 
-verifyTag().catch((error) => {
+verifyTags().catch((error) => {
   console.error(error);
   process.exit(-1);
 });
