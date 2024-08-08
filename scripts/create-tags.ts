@@ -3,6 +3,7 @@ import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
 import { clearLines, logger } from "./utils";
 import hre from "hardhat";
 import { Metadata, MetadataType } from "./tag-meta";
+import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
 async function createTag() {
   console.log("Please connect a NFC reader...");
@@ -31,15 +32,13 @@ async function createTag() {
       const testAddress = privateKeyToAddress(testPrivateKey);
       logger.info("Generating Address", testAddress);
 
+      const metadataFromInput = await getMetadataFromInput();
+      clearLines(5);
+
       const metadata = new Metadata();
-      const metadataJson: MetadataType = {
-        id: "1",
-        name: "Test Tag",
-        description: "This is a test tag",
-      };
       let metadataUri: string;
       try {
-        metadataUri = metadata.format(metadataJson);
+        metadataUri = metadata.format(metadataFromInput);
       } catch (error) {
         logger.error("Error generating metadata", error);
         process.exit(-1);
@@ -71,12 +70,10 @@ async function createTag() {
         const txReceipt = await publicClinet.waitForTransactionReceipt({
           hash: tx,
         });
-        // logger.info("Tag Created Successfully", txReceipt);
         logger.info("Tag Created Successfully", {
           transactionHash: txReceipt.transactionHash,
         });
-
-        process.exit(0);
+        console.log("Remove the tag from the reader...");
       } catch (error) {
         logger.error(`error writing data`, reader, error);
         process.exit(-1);
@@ -84,8 +81,9 @@ async function createTag() {
     });
 
     reader.on("card.off", async () => {
-      logger.error(`card removed`, reader);
-      process.exit(-1);
+      clearLines(1);
+      logger.info(`card removed`, reader);
+      console.log("Please scan a NFC tag...");
     });
 
     reader.on("error", (err: any) => {
@@ -104,6 +102,7 @@ async function createTag() {
     process.exit(-1);
   });
 }
+import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
 createTag().catch((error) => {
   console.error(error);
