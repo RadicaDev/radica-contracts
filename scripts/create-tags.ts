@@ -2,7 +2,7 @@ import { NFC } from "nfc-pcsc";
 import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
 import { clearLines, logger } from "./utils";
 import hre from "hardhat";
-import { Metadata, MetadataType } from "./tag-meta";
+import { Metadata } from "./tag-meta";
 import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
 async function createTag() {
@@ -102,7 +102,6 @@ async function createTag() {
     process.exit(-1);
   });
 }
-import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
 createTag().catch((error) => {
   console.error(error);

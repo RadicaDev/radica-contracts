@@ -2,7 +2,8 @@ import { NFC } from "nfc-pcsc";
 import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
 import { clearLines, logger } from "./utils";
 import hre from "hardhat";
-import { Metadata, MetadataType } from "./tag-meta";
+import { Metadata } from "./tag-meta";
+import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 
 async function createTag() {
   console.log("Please connect a NFC reader...");
@@ -31,15 +32,13 @@ async function createTag() {
       const testAddress = privateKeyToAddress(testPrivateKey);
       logger.info("Generating Address", testAddress);
 
+      const metadataFromInput = await getMetadataFromInput();
+      clearLines(5);
+
       const metadata = new Metadata();
-      const metadataJson: MetadataType = {
-        id: "1",
-        name: "Test Tag",
-        description: "This is a test tag",
-      };
       let metadataUri: string;
       try {
-        metadataUri = metadata.format(metadataJson);
+        metadataUri = metadata.format(metadataFromInput);
       } catch (error) {
         logger.error("Error generating metadata", error);
         process.exit(-1);
