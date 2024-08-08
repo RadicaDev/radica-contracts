@@ -90,6 +90,10 @@ async function verifyTag() {
       process.exit(-1);
     });
   });
+
+  nfc.on("error", (err: any) => {
+    console.log("an error occurred", err);
+  });
 }
 
 verifyTag().catch((error) => {
