@@ -2,6 +2,7 @@ import { NFC } from "nfc-pcsc";
 import { clearLines, logger } from "./utils";
 import hre from "hardhat";
 import { getAddress } from "viem";
+import { Metadata } from "./tag-meta";
 
 async function verifyTag() {
   console.log("Please connect a NFC reader...");
@@ -59,14 +60,19 @@ async function verifyTag() {
 
           const tokenURI = await radixTag.read.tokenURI([tokenId]);
 
-          logger.info("Tag Verified!", tokenURI);
+          const metadata = new Metadata();
+          const metadataJson = metadata.parse(tokenURI);
+
+          logger.info("Tag Verified!", metadataJson);
 
           process.exit(0);
         } catch (error) {
-          logger.error(`error verifying the tag`, error);
+          logger.error(`error verifying the tag`);
+          process.exit(-1);
         }
       } catch (error) {
         logger.error(`error reading data`, reader, error);
+        process.exit(-1);
       }
     });
 
