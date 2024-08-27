@@ -1,9 +1,12 @@
 import { NFC } from "nfc-pcsc";
-import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
-import { clearLines, logger } from "./utils";
-import hre from "hardhat";
+import {
+  clearLines,
+  logger,
+  getMetadataFromInput,
+  getAddressFromUID,
+} from "./utils";
 import { Metadata } from "./tag-meta";
-import { getMetadataFromInput } from "./utils/getMetadataFromInput";
+import hre from "hardhat";
 
 async function createTag() {
   console.log("Please connect a NFC reader...");
@@ -23,14 +26,15 @@ async function createTag() {
       clearLines(1);
       logger.info(`card detected`, reader);
 
-      // Generate Random Ethereum Account
-      console.log("");
-
-      const testPrivateKey = generatePrivateKey();
-      logger.info("Generating Private Key", testPrivateKey);
-
-      const testAddress = privateKeyToAddress(testPrivateKey);
-      logger.info("Generating Address", testAddress);
+      // read address from tag
+      let tagAddr;
+      try {
+        tagAddr = await getAddressFromUID(reader);
+        logger.info(`Address retrieved`, reader, tagAddr);
+      } catch (error) {
+        logger.error(`error reading data`, reader, error);
+        process.exit(-1);
+      }
 
       const metadataFromInput = await getMetadataFromInput();
       clearLines(5);
@@ -47,10 +51,6 @@ async function createTag() {
       console.log("");
 
       try {
-        logger.info("Writing data on the tag", reader);
-        await reader.write(0x4, Buffer.from(testAddress.substring(2), "hex"));
-        logger.info(`Data write completed`, reader);
-
         // Mint NFT Tag
         console.log("");
 
@@ -64,13 +64,12 @@ async function createTag() {
         )["RadixTagModule#RadixTag"];
         const radixTag = await hre.viem.getContractAt("RadixTag", radixTagAddr);
 
-        const tx = await radixTag.write.createTag([testAddress, metadataUri]);
+        const tx = await radixTag.write.createTag([tagAddr, metadataUri]);
 
         const publicClinet = await hre.viem.getPublicClient();
         const txReceipt = await publicClinet.waitForTransactionReceipt({
           hash: tx,
         });
-        // logger.info("Tag Created Successfully", txReceipt);
         logger.info("Tag Created Successfully", {
           transactionHash: txReceipt.transactionHash,
         });

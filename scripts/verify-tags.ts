@@ -1,7 +1,6 @@
 import { NFC } from "nfc-pcsc";
-import { clearLines, logger } from "./utils";
+import { clearLines, getAddressFromUID, logger } from "./utils";
 import hre from "hardhat";
-import { getAddress } from "viem";
 import { Metadata } from "./tag-meta";
 
 async function verifyTags() {
@@ -23,14 +22,7 @@ async function verifyTags() {
       logger.info(`card detected`, reader);
 
       try {
-        const data = await reader.read(0x4, 20);
-        if (data.toString("hex") === "0".repeat(data.length * 2)) {
-          logger.error(`NFC tag is initialized.`, reader);
-          console.log("Please remove the tag from the reader...");
-          return;
-        }
-
-        const tagAddr = getAddress(`0x${data.toString("hex")}`);
+        const tagAddr = await getAddressFromUID(reader);
         logger.info(`Address retrieved`, reader, tagAddr);
 
         try {

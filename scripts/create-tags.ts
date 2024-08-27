@@ -1,6 +1,5 @@
 import { NFC } from "nfc-pcsc";
-import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
-import { clearLines, logger } from "./utils";
+import { clearLines, getAddressFromUID, logger } from "./utils";
 import hre from "hardhat";
 import { Metadata } from "./tag-meta";
 import { getMetadataFromInput } from "./utils/getMetadataFromInput";
@@ -23,27 +22,15 @@ async function createTags() {
       clearLines(1);
       logger.info(`card detected`, reader);
 
-      // check that the tag is initialized
+      // read address from tag
+      let tagAddr;
       try {
-        const data = await reader.read(0x4, 20);
-        if (data.toString("hex") !== "0".repeat(data.length * 2)) {
-          logger.error("Tag already initialized", reader);
-          console.log("Please remove the tag from the reader...");
-          return;
-        }
+        tagAddr = await getAddressFromUID(reader);
+        logger.info(`Address retrieved`, reader, tagAddr);
       } catch (error) {
-        logger.error("Error reading data", reader, error);
+        logger.error(`error reading data`, reader, error);
         process.exit(-1);
       }
-
-      // Generate Random Ethereum Account
-      console.log("");
-
-      const testPrivateKey = generatePrivateKey();
-      logger.info("Generating Private Key", testPrivateKey);
-
-      const testAddress = privateKeyToAddress(testPrivateKey);
-      logger.info("Generating Address", testAddress);
 
       const metadataFromInput = await getMetadataFromInput();
       clearLines(5);
@@ -60,10 +47,6 @@ async function createTags() {
       console.log("");
 
       try {
-        logger.info("Writing data on the tag", reader);
-        await reader.write(0x4, Buffer.from(testAddress.substring(2), "hex"));
-        logger.info(`Data write completed`, reader);
-
         // Mint NFT Tag
         console.log("");
 
@@ -77,7 +60,15 @@ async function createTags() {
         )["RadixTagModule#RadixTag"];
         const radixTag = await hre.viem.getContractAt("RadixTag", radixTagAddr);
 
-        const tx = await radixTag.write.createTag([testAddress, metadataUri]);
+        // check that tag does not already exist
+        const balance = await radixTag.read.balanceOf([tagAddr]);
+        if (balance > 0) {
+          logger.error("Tag already initialized", reader);
+          console.log("Please remove the tag from the reader...");
+          return;
+        }
+
+        const tx = await radixTag.write.createTag([tagAddr, metadataUri]);
 
         const publicClinet = await hre.viem.getPublicClient();
         const txReceipt = await publicClinet.waitForTransactionReceipt({
