@@ -1,7 +1,17 @@
 import { NFC } from "nfc-pcsc";
 import { clearLines, logger } from "./utils";
+import { readFileSync } from "fs";
+import { createSign } from "crypto";
 
 async function initTags() {
+  let sk: string;
+  try {
+    sk = readFileSync("crypto-keys/ec-secp256k1-sk.pem", "utf-8");
+  } catch (error) {
+    logger.error("Error reading private key", error);
+    process.exit(-1);
+  }
+
   console.log("Please connect a NFC reader...");
 
   const nfc = new NFC();
@@ -21,9 +31,21 @@ async function initTags() {
 
       try {
         logger.info("Initializing the tag", reader);
-        // get a 20 bytes zero array
-        const zeroArray = new Uint8Array(20);
-        await reader.write(0x4, zeroArray);
+        // get uid from the tag
+        const uid = await reader.read(0, 8);
+
+        // sign the uid
+        const sig = createSign("SHA256").update(uid).sign(sk);
+        const sigLen = Buffer.allocUnsafe(4);
+        sigLen.fill(0);
+        sigLen.writeUInt32BE(sig.length);
+
+        // make the signature to be 72 bytes
+        const sigBuf = Buffer.allocUnsafe(72).fill(0);
+        sig.copy(sigBuf);
+
+        await reader.write(0x4, sigLen);
+        await reader.write(0x5, sigBuf);
         logger.info(`Data write completed`, reader);
 
         console.log("Remove the tag from the reader...");

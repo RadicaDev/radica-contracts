@@ -1,0 +1,7 @@
+In this directory there should be 2 files containing the cryptographic keys for the application. These files are:
+- ec-secp256k1-sk.pem - Private key
+- ec-secp256k1-pk.pem - Public key
+
+If you do not have these files, you can generate them using the following commands:
+$ openssl ecparam -genkey -name secp256k1 -out ec-secp256k1-sk.pem -noout
+$ openssl ec -in ec-secp256k1-sk.pem -pubout -out ec-secp256k1-pk.pem
