@@ -22,8 +22,15 @@ async function verifyTags() {
       logger.info(`card detected`, reader);
 
       try {
-        const tagAddr = await getAddressFromUID(reader);
-        logger.info(`Address retrieved`, reader, tagAddr);
+        let tagAddr;
+        try {
+          tagAddr = await getAddressFromUID(reader);
+          logger.info(`Address retrieved`, reader, tagAddr);
+        } catch (error: any) {
+          logger.error(error.message);
+          console.log("Please remove the tag from the reader...");
+          return;
+        }
 
         try {
           console.log("");

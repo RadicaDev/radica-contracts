@@ -27,9 +27,10 @@ async function createTags() {
       try {
         tagAddr = await getAddressFromUID(reader);
         logger.info(`Address retrieved`, reader, tagAddr);
-      } catch (error) {
-        logger.error(`error reading data`, reader, error);
-        process.exit(-1);
+      } catch (error: any) {
+        logger.error(error.message);
+        console.log("Please remove the tag from the reader...");
+        return;
       }
 
       const metadataFromInput = await getMetadataFromInput();
