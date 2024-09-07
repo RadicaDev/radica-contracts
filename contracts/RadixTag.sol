@@ -13,18 +13,18 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice Contract implementation to manage Radix NFC tags (Demo)
  */
 contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
-    address public _radixPropertyAddr;
+    address public radixPropertyAddr;
 
     uint256 private _nextTokenId;
 
     constructor() ERC721("RadixTag", "RTAG") Ownable(msg.sender) {}
 
-    function setRadixPropertyAddr(address radixPropertyAddr) public {
+    function setRadixPropertyAddr(address _radixPropertyAddr) public {
         require(
-            _radixPropertyAddr == address(0),
+            radixPropertyAddr == address(0),
             "RadixProperty address cannot be modified"
         );
-        _radixPropertyAddr = radixPropertyAddr;
+        radixPropertyAddr = _radixPropertyAddr;
     }
 
     /**
@@ -46,7 +46,7 @@ contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _safeMint(tagAddr, tokenId);
         _setTokenURI(tokenId, uri);
 
-        (bool success, ) = _radixPropertyAddr.call(
+        (bool success, ) = radixPropertyAddr.call(
             abi.encodeWithSignature(
                 "setProof(uint256,bytes32)",
                 tokenId,

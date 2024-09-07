@@ -32,8 +32,10 @@ describe("RadixTag", function () {
 
       const tagAddr = tag.account.address;
       const uri = "test uri";
+      const proofHash =
+        `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([tagAddr, uri]);
+      await radixTag.write.createTag([tagAddr, uri, proofHash]);
 
       expect(await radixTag.read.balanceOf([tagAddr])).to.equal(1n);
     });
@@ -43,8 +45,10 @@ describe("RadixTag", function () {
 
       const tagAddr = tag.account.address;
       const uri = "test uri";
+      const proofHash =
+        `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([tagAddr, uri]);
+      await radixTag.write.createTag([tagAddr, uri, proofHash]);
 
       expect(await radixTag.read.tokenURI([0n])).to.equal(uri);
     });
