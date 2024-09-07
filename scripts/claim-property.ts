@@ -78,7 +78,7 @@ async function claimProperty() {
 
         process.exit(0);
       } catch (error) {
-        logger.error(`error claiming the property`, reader, error);
+        logger.error(`error claiming the property`);
         process.exit(-1);
       }
     });

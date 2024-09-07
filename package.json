@@ -9,7 +9,9 @@
     "create:tag": "hardhat run ./scripts/create-tag.ts --network localhost",
     "create:tags": "hardhat run ./scripts/create-tags.ts --network localhost",
     "verify:tag": "hardhat run ./scripts/verify-tag.ts --network localhost",
-    "verify:tags": "hardhat run ./scripts/verify-tags.ts --network localhost"
+    "verify:tags": "hardhat run ./scripts/verify-tags.ts --network localhost",
+    "claim-property": "hardhat run ./scripts/claim-property.ts --network localhost",
+    "get-owned": "hardhat run ./scripts/get-owned.ts --network localhost"
   },
   "keywords": [],
   "author": "Francesco Laterza",
