@@ -46,6 +46,11 @@ async function initTags() {
 
         await reader.write(0x4, sigLen);
         await reader.write(0x5, sigBuf);
+
+        // format the next 32 bytes
+        const zeroBuf = Buffer.allocUnsafe(32).fill(0);
+        await reader.write(0x17, zeroBuf);
+
         logger.info(`Data write completed`, reader);
 
         console.log("Remove the tag from the reader...");
