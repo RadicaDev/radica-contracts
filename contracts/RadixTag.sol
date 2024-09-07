@@ -13,9 +13,19 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice Contract implementation to manage Radix NFC tags (Demo)
  */
 contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+    address public _radixPropertyAddr;
+
     uint256 private _nextTokenId;
 
     constructor() ERC721("RadixTag", "RTAG") Ownable(msg.sender) {}
+
+    function setRadixPropertyAddr(address radixPropertyAddr) public {
+        require(
+            _radixPropertyAddr == address(0),
+            "RadixProperty address cannot be modified"
+        );
+        _radixPropertyAddr = radixPropertyAddr;
+    }
 
     /**
      * @notice Creates a new NFC for a tag
@@ -25,10 +35,25 @@ contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @param tagAddr The address of the tag
      * @param uri The URI to be associated with the tag
      */
-    function createTag(address tagAddr, string memory uri) public onlyOwner {
+    function createTag(
+        address tagAddr,
+        string memory uri,
+        bytes32 proofHash
+    ) public onlyOwner {
+        require(proofHash != 0, "Proof hash cannot be zero");
+
         uint256 tokenId = _nextTokenId++;
         _safeMint(tagAddr, tokenId);
         _setTokenURI(tokenId, uri);
+
+        (bool success, ) = _radixPropertyAddr.call(
+            abi.encodeWithSignature(
+                "setProof(uint256,bytes32)",
+                tokenId,
+                proofHash
+            )
+        );
+        require(success, "Call to setProof failed");
     }
 
     // The following functions are overrides required by Solidity.
