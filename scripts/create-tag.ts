@@ -7,6 +7,8 @@ import {
 } from "./utils";
 import { Metadata } from "./tag-meta";
 import hre from "hardhat";
+import { randomBytes } from "crypto";
+import { keccak256 } from "viem";
 
 async function createTag() {
   console.log("Please connect a NFC reader...");
@@ -48,6 +50,24 @@ async function createTag() {
         process.exit(-1);
       }
 
+      const proof = randomBytes(32);
+      const proofHash = keccak256(proof);
+
+      // check that the memory for the proof is empty
+      // and write the proof to the tag
+      try {
+        const data = await reader.read(0x17, 32);
+        if (data.toString("hex") !== "00".repeat(32)) {
+          logger.error(`Tag is not formatted`, reader);
+          process.exit(-1);
+        }
+        reader.write(0x17, proof);
+        logger.info(`Proof written to the tag`, reader, proof.toString("hex"));
+      } catch (error) {
+        logger.error(`error writing the proof to the tag`, reader, error);
+        process.exit(-1);
+      }
+
       console.log("");
 
       try {
@@ -64,7 +84,11 @@ async function createTag() {
         )["RadixTagModule#RadixTag"];
         const radixTag = await hre.viem.getContractAt("RadixTag", radixTagAddr);
 
-        const tx = await radixTag.write.createTag([tagAddr, metadataUri]);
+        const tx = await radixTag.write.createTag([
+          tagAddr,
+          metadataUri,
+          proofHash,
+        ]);
 
         const publicClinet = await hre.viem.getPublicClient();
         const txReceipt = await publicClinet.waitForTransactionReceipt({
@@ -76,7 +100,7 @@ async function createTag() {
 
         process.exit(0);
       } catch (error) {
-        logger.error(`error writing data`, reader, error);
+        logger.error(`error minting the tag`, reader, error);
         process.exit(-1);
       }
     });
