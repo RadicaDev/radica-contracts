@@ -53,13 +53,13 @@ async function createTags() {
       // check that the memory for the proof is empty
       // and write the proof to the tag
       try {
-        const data = await reader.read(0x17, 32);
+        const data = await reader.read(0x15, 32);
         if (data.toString("hex") !== "00".repeat(32)) {
           logger.error("Tag is not formatted");
           console.log("Please remove the tag from the reader...");
           return;
         }
-        reader.write(0x17, proof);
+        reader.write(0x15, proof);
         logger.info(`Proof written to the tag`, reader, proof.toString("hex"));
       } catch (error) {
         logger.error(`error writing the proof to the tag`, reader, error);

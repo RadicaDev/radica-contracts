@@ -1,17 +1,9 @@
 import { NFC } from "nfc-pcsc";
 import { clearLines, logger } from "./utils";
-import { readFileSync } from "fs";
-import { createSign } from "crypto";
+import { privateKeyToAccount } from "viem/accounts";
+import sk from "../crypto-keys/privateKey";
 
 async function initTags() {
-  let sk: string;
-  try {
-    sk = readFileSync("crypto-keys/ec-secp256k1-sk.pem", "utf-8");
-  } catch (error) {
-    logger.error("Error reading private key", error);
-    process.exit(-1);
-  }
-
   console.log("Please connect a NFC reader...");
 
   const nfc = new NFC();
@@ -35,21 +27,21 @@ async function initTags() {
         const uid = await reader.read(0, 8);
 
         // sign the uid
-        const sig = createSign("SHA256").update(uid).sign(sk);
-        const sigLen = Buffer.allocUnsafe(4);
-        sigLen.fill(0);
-        sigLen.writeUInt32BE(sig.length);
+        const signer = privateKeyToAccount(sk);
+        const sigHex = await signer.signMessage({
+          message: { raw: uid },
+        });
+        let sig = Buffer.from(sigHex.slice(2), "hex");
 
-        // make the signature to be 72 bytes
-        const sigBuf = Buffer.allocUnsafe(72).fill(0);
-        sig.copy(sigBuf);
+        // pad the signature to be 68 bytes
+        const padding = Buffer.allocUnsafe(68 - sig.length).fill(0);
+        sig = Buffer.concat([sig, padding]);
 
-        await reader.write(0x4, sigLen);
-        await reader.write(0x5, sigBuf);
+        await reader.write(0x4, sig);
 
         // format the next 32 bytes
         const zeroBuf = Buffer.allocUnsafe(32).fill(0);
-        await reader.write(0x17, zeroBuf);
+        await reader.write(0x15, zeroBuf);
 
         logger.info(`Data write completed`, reader);
 
