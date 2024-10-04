@@ -63,6 +63,7 @@ contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 tokenId,
         address auth
     ) internal override(ERC721, ERC721Enumerable) returns (address) {
+        require(_ownerOf(tokenId) == address(0), "Non transferable token"); // Only mint is allowed
         return super._update(to, tokenId, auth);
     }
 

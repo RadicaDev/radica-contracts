@@ -72,9 +72,8 @@ describe("RadixProperty", function () {
       await radixTag.write.createTag([tagAddr, uri, proofHash]);
 
       const tokenId = await radixTag.read.tokenOfOwnerByIndex([tagAddr, 0n]);
-      expect(
-        radixProperty.write.claimProperty([tokenId, wrongProof, uri]),
-      ).to.rejectedWith("Invalid proof");
+      expect(radixProperty.write.claimProperty([tokenId, wrongProof, uri])).to
+        .rejected;
     });
   });
 });

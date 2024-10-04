@@ -53,4 +53,21 @@ describe("RadixTag", function () {
       expect(await radixTag.read.tokenURI([0n])).to.equal(uri);
     });
   });
+
+  describe("Transfer", function () {
+    it("Should revert when transferring a tag", async function () {
+      const { radixTag, owner, tag } = await loadFixture(deployRadixTagFixture);
+
+      const ownerAddr = owner.account.address;
+      const tagAddr = tag.account.address;
+      const uri = "test uri";
+      const proofHash =
+        `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
+
+      await radixTag.write.createTag([ownerAddr, uri, proofHash]);
+
+      expect(radixTag.write.safeTransferFrom([ownerAddr, tagAddr, 0n])).to
+        .rejected;
+    });
+  });
 });
