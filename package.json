@@ -4,11 +4,13 @@
   "description": "",
   "scripts": {
     "test": "hardhat test",
+    "node:broadcast": "hardhat node --hostname 0.0.0.0",
     "deploy": "hardhat ignition deploy ./ignition/modules/RadixTag.ts --network localhost",
     "init:tags": "hardhat run ./scripts/init-tags.ts --network localhost",
     "create:tag": "hardhat run ./scripts/create-tag.ts --network localhost",
     "create:tags": "hardhat run ./scripts/create-tags.ts --network localhost",
     "verify:tag": "hardhat run ./scripts/verify-tag.ts --network localhost",
+    "verify:tag-qr": "hardhat run ./scripts/verify-tag-qr.ts --network localhost",
     "verify:tags": "hardhat run ./scripts/verify-tags.ts --network localhost",
     "claim-property": "hardhat run ./scripts/claim-property.ts --network localhost",
     "get-owned": "hardhat run ./scripts/get-owned.ts --network localhost"
@@ -38,5 +40,8 @@
     "typescript": "~5.0.4",
     "viem": "^2.18.8",
     "winston": "^3.14.2"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0"
   }
 }

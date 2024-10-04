@@ -9,8 +9,8 @@ export async function getAddressFromUIDWithProof(reader: any) {
 
   const isValid = await verifyMessage({
     address: addr,
-    message: { raw: uid },
-    signature: sig.toString("hex"),
+    message: { raw: `0x${uid.toString("hex")}` },
+    signature: sig,
   });
 
   if (!isValid) {
