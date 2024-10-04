@@ -41,6 +41,7 @@ contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         bytes32 proofHash
     ) public onlyOwner {
         require(proofHash != 0, "Proof hash cannot be zero");
+        require(balanceOf(tagAddr) == 0, "Tag already in use");
 
         uint256 tokenId = _nextTokenId++;
         _safeMint(tagAddr, tokenId);
