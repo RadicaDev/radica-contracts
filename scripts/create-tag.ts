@@ -79,12 +79,12 @@ async function createTag() {
           ? 31337
           : hre.network.config.chainId;
 
-        const radixTagAddr = require(
+        const radicaTagAddr = require(
           `../ignition/deployments/chain-${chainId}/deployed_addresses`,
-        )["RadixTagModule#RadixTag"];
-        const radixTag = await hre.viem.getContractAt("RadixTag", radixTagAddr);
+        )["RadicaTagModule#RadicaTag"];
+        const radicaTag = await hre.viem.getContractAt("RadicaTag", radicaTagAddr);
 
-        const tx = await radixTag.write.createTag([
+        const tx = await radicaTag.write.createTag([
           tagAddr,
           metadataUri,
           proofHash,

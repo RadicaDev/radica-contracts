@@ -44,25 +44,28 @@ async function claimProperty() {
           ? 31337
           : hre.network.config.chainId;
 
-        const radixTagAddr = require(
+        const radicaTagAddr = require(
           `../ignition/deployments/chain-${chainId}/deployed_addresses`,
-        )["RadixTagModule#RadixTag"];
-        const radixTag = await hre.viem.getContractAt("RadixTag", radixTagAddr);
-
-        const radixPropertyAddr = require(
-          `../ignition/deployments/chain-${chainId}/deployed_addresses`,
-        )["RadixTagModule#RadixProperty"];
-        const radixProperty = await hre.viem.getContractAt(
-          "RadixProperty",
-          radixPropertyAddr,
+        )["RadicaTagModule#RadicaTag"];
+        const radicaTag = await hre.viem.getContractAt(
+          "RadicaTag",
+          radicaTagAddr,
         );
 
-        const tokenId = await radixTag.read.tokenOfOwnerByIndex([
+        const radicaPropertyAddr = require(
+          `../ignition/deployments/chain-${chainId}/deployed_addresses`,
+        )["RadicaTagModule#RadicaProperty"];
+        const radicaProperty = await hre.viem.getContractAt(
+          "RadicaProperty",
+          radicaPropertyAddr,
+        );
+
+        const tokenId = await radicaTag.read.tokenOfOwnerByIndex([
           tagAddr as `0x${string}`,
           0n,
         ]);
 
-        const tx = await radixProperty.write.claimProperty([
+        const tx = await radicaProperty.write.claimProperty([
           tokenId,
           proof as `0x${string}`,
           `Property of ${tokenId.toString()}`,

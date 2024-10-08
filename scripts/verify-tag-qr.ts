@@ -34,26 +34,26 @@ async function verifyTag() {
             ? 31337
             : hre.network.config.chainId;
 
-          const radixTagAddr = require(
+          const radicaTagAddr = require(
             `../ignition/deployments/chain-${chainId}/deployed_addresses`,
-          )["RadixTagModule#RadixTag"];
-          const radixTag = await hre.viem.getContractAt(
-            "RadixTag",
-            radixTagAddr,
+          )["RadicaTagModule#RadicaTag"];
+          const radicaTag = await hre.viem.getContractAt(
+            "RadicaTag",
+            radicaTagAddr,
           );
 
-          const balance = await radixTag.read.balanceOf([tagAddr]);
+          const balance = await radicaTag.read.balanceOf([tagAddr]);
           if (balance === 0n) {
             logger.error(`Tag NOT verified`);
             process.exit(-1);
           }
 
-          const tokenId = await radixTag.read.tokenOfOwnerByIndex([
+          const tokenId = await radicaTag.read.tokenOfOwnerByIndex([
             tagAddr,
             0n,
           ]);
 
-          const tokenURI = await radixTag.read.tokenURI([tokenId]);
+          const tokenURI = await radicaTag.read.tokenURI([tokenId]);
 
           const metadata = new Metadata();
           const metadataJson = metadata.parse(tokenURI);

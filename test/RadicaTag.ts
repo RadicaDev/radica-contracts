@@ -3,14 +3,14 @@ import hre from "hardhat";
 import { expect } from "chai";
 import { getAddress } from "viem";
 
-describe("RadixTag", function () {
-  async function deployRadixTagFixture() {
+describe("RadicaTag", function () {
+  async function deployRadicaTagFixture() {
     const [owner, tag] = await hre.viem.getWalletClients();
 
-    const radixTag = await hre.viem.deployContract("RadixTag");
+    const radicaTag = await hre.viem.deployContract("RadicaTag");
 
     return {
-      radixTag,
+      radicaTag,
       owner,
       tag,
     };
@@ -18,9 +18,9 @@ describe("RadixTag", function () {
 
   describe("Deployment", function () {
     it("Should set the right owner", async function () {
-      const { radixTag, owner } = await loadFixture(deployRadixTagFixture);
+      const { radicaTag, owner } = await loadFixture(deployRadicaTagFixture);
 
-      expect(await radixTag.read.owner()).to.equal(
+      expect(await radicaTag.read.owner()).to.equal(
         getAddress(owner.account.address),
       );
     });
@@ -28,48 +28,48 @@ describe("RadixTag", function () {
 
   describe("Tag Creation", function () {
     it("Should create a tag", async function () {
-      const { radixTag, tag } = await loadFixture(deployRadixTagFixture);
+      const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
       const uri = "test uri";
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([tagAddr, uri, proofHash]);
+      await radicaTag.write.createTag([tagAddr, uri, proofHash]);
 
-      expect(await radixTag.read.balanceOf([tagAddr])).to.equal(1n);
+      expect(await radicaTag.read.balanceOf([tagAddr])).to.equal(1n);
     });
 
     it("Should set the correct tokenUri to the Tag", async function () {
-      const { radixTag, tag } = await loadFixture(deployRadixTagFixture);
+      const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
       const uri = "test uri";
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([tagAddr, uri, proofHash]);
+      await radicaTag.write.createTag([tagAddr, uri, proofHash]);
 
-      expect(await radixTag.read.tokenURI([0n])).to.equal(uri);
+      expect(await radicaTag.read.tokenURI([0n])).to.equal(uri);
     });
 
     it("Should revert if the tag has already been used", async function () {
-      const { radixTag, tag } = await loadFixture(deployRadixTagFixture);
+      const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
       const uri = "test uri";
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([tagAddr, uri, proofHash]);
+      await radicaTag.write.createTag([tagAddr, uri, proofHash]);
 
-      expect(radixTag.write.createTag([tagAddr, uri, proofHash])).to.rejected;
+      expect(radicaTag.write.createTag([tagAddr, uri, proofHash])).to.rejected;
     });
   });
 
   describe("Transfer", function () {
     it("Should revert when transferring a tag", async function () {
-      const { radixTag, owner, tag } = await loadFixture(deployRadixTagFixture);
+      const { radicaTag, owner, tag } = await loadFixture(deployRadicaTagFixture);
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
@@ -77,9 +77,9 @@ describe("RadixTag", function () {
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radixTag.write.createTag([ownerAddr, uri, proofHash]);
+      await radicaTag.write.createTag([ownerAddr, uri, proofHash]);
 
-      expect(radixTag.write.safeTransferFrom([ownerAddr, tagAddr, 0n])).to
+      expect(radicaTag.write.safeTransferFrom([ownerAddr, tagAddr, 0n])).to
         .rejected;
     });
   });

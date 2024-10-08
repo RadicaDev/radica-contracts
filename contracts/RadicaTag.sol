@@ -8,23 +8,23 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title RadixTag
+ * @title RadicaTag
  * @author Francesco Laterza
- * @notice Contract implementation to manage Radix NFC tags (Demo)
+ * @notice Contract implementation to manage Radica NFC tags (Demo)
  */
-contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
-    address public radixPropertyAddr;
+contract RadicaTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+    address public radicaPropertyAddr;
 
     uint256 private _nextTokenId;
 
-    constructor() ERC721("RadixTag", "RTAG") Ownable(msg.sender) {}
+    constructor() ERC721("RadicaTag", "RTAG") Ownable(msg.sender) {}
 
-    function setRadixPropertyAddr(address _radixPropertyAddr) public {
+    function setRadicaPropertyAddr(address _radicaPropertyAddr) public {
         require(
-            radixPropertyAddr == address(0),
-            "RadixProperty address cannot be modified"
+            radicaPropertyAddr == address(0),
+            "RadicaProperty address cannot be modified"
         );
-        radixPropertyAddr = _radixPropertyAddr;
+        radicaPropertyAddr = _radicaPropertyAddr;
     }
 
     /**
@@ -47,7 +47,7 @@ contract RadixTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         _safeMint(tagAddr, tokenId);
         _setTokenURI(tokenId, uri);
 
-        (bool success, ) = radixPropertyAddr.call(
+        (bool success, ) = radicaPropertyAddr.call(
             abi.encodeWithSignature(
                 "setProof(uint256,bytes32)",
                 tokenId,

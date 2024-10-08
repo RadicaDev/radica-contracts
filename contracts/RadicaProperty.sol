@@ -8,28 +8,28 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title RadixProperty
+ * @title RadicaProperty
  * @author Francesco Laterza
- * @notice Contract implementation to manage Radix Property NFTs
+ * @notice Contract implementation to manage Radica Property NFTs
  */
-contract RadixProperty is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+contract RadicaProperty is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     mapping(uint256 => bytes32) private _tokenIdToProofHash;
 
     /**
      * @notice Constructor
      *
-     * @param radixTagAddr The address of the RadixTag contract
+     * @param radicaTagAddr The address of the RadicaTag contract
      */
     constructor(
-        address radixTagAddr
-    ) ERC721("RadixProperty", "RPRP") Ownable(radixTagAddr) {
-        (bool success, ) = radixTagAddr.call(
+        address radicaTagAddr
+    ) ERC721("RadicaProperty", "RPRP") Ownable(radicaTagAddr) {
+        (bool success, ) = radicaTagAddr.call(
             abi.encodeWithSignature(
-                "setRadixPropertyAddr(address)",
+                "setRadicaPropertyAddr(address)",
                 address(this)
             )
         );
-        require(success, "Call to setRadixPropertyAddr failed");
+        require(success, "Call to setRadicaPropertyAddr failed");
     }
 
     /**

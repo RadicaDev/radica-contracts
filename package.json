@@ -5,7 +5,7 @@
   "scripts": {
     "test": "hardhat test",
     "node:broadcast": "hardhat node --hostname 0.0.0.0",
-    "deploy": "hardhat ignition deploy ./ignition/modules/RadixTag.ts --network localhost",
+    "deploy": "hardhat ignition deploy ./ignition/modules/RadicaTag.ts --network localhost",
     "init:tags": "hardhat run ./scripts/init-tags.ts --network localhost",
     "create:tag": "hardhat run ./scripts/create-tag.ts --network localhost",
     "create:tags": "hardhat run ./scripts/create-tags.ts --network localhost",
