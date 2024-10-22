@@ -16,5 +16,5 @@ export async function getAddressFromUID(reader: any) {
     throw new Error("Invalid Signature");
   }
 
-  return privateKeyToAddress(keccak256(uid));
+  return privateKeyToAddress(keccak256(sig));
 }

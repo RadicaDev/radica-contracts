@@ -17,5 +17,5 @@ export async function getAddressFromUIDWithProof(reader: any) {
     throw new Error("Invalid Signature");
   }
 
-  return [privateKeyToAddress(keccak256(uid)), `0x${proof.toString("hex")}`];
+  return [privateKeyToAddress(keccak256(sig)), `0x${proof.toString("hex")}`];
 }
