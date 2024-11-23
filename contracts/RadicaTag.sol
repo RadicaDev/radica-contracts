@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 /**
  * @title RadicaTag
  * @author Francesco Laterza
- * @notice Contract implementation to manage Radica NFC tags (Demo)
+ * @notice Contract implementation to manage Radica NFC tags
  */
 contract RadicaTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     address public radicaPropertyAddr;
@@ -28,7 +28,7 @@ contract RadicaTag is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     /**
-     * @notice Creates a new NFC for a tag
+     * @notice Creates a new NFT for a tag
      *
      * @dev The tagAddr should be deriverd fromm the tag's public key
      *
