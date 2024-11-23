@@ -52,12 +52,18 @@ npx hardhat ignition deploy ./ignition/modules/RadicaTag.ts --network localhost
 
 ### Create a Tag
 
-Before creating a new tag, you need to initialize it.
+Before creating a new tag, you need to initialize it. Be sure to have the cryptographic keys in the `./crypto-keys` folder.
 
-Exit with `Ctrl + C` when you have initialized all the tags.
+Run the following command to create the keys.
+```bash
+node init-keys.cjs
+```
+
+Run the following command to initialize the tags.
 ```bash
 npx hardhat run scripts/init-tags.ts
 ```
+Exit with `Ctrl + C` when you have initialized all the tags.
 
 > **_Note:_** The `init-tags.ts` is needed since we are not using the official NFC tags. In order to make this tool accessible to everyone, we use standard NFC tags and we simulate the signature verification process.
 
