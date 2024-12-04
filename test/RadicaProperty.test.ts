@@ -46,7 +46,7 @@ describe("RadicaProperty", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
@@ -80,7 +80,7 @@ describe("RadicaProperty", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;

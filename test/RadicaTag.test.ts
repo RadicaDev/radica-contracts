@@ -35,7 +35,7 @@ describe("RadicaTag", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proofHash =
@@ -58,7 +58,7 @@ describe("RadicaTag", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proofHash =
@@ -87,7 +87,7 @@ describe("RadicaTag", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proofHash =
@@ -101,7 +101,7 @@ describe("RadicaTag", function () {
       expect(metadata.id).to.equal(metadataFromContract.id);
       expect(metadata.name).to.equal(metadataFromContract.name);
       expect(metadata.description).to.equal(metadataFromContract.description);
-      expect(metadata.imageUrl).to.equal(metadataFromContract.imageUrl);
+      expect(metadata.image).to.equal(metadataFromContract.image);
       expect(metadata.externalUrl).to.equal(metadataFromContract.externalUrl);
     });
 
@@ -113,7 +113,7 @@ describe("RadicaTag", function () {
         id: "1",
         name: "test",
         description: "test description",
-        imageUrl: "https://testimageurl.com",
+        image: "https://testimageurl.com",
         externalUrl: "https://testexternalurl.com",
       };
       const proofHash =

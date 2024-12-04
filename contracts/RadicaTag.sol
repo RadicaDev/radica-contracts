@@ -14,7 +14,7 @@ struct Metadata {
     string id;
     string name;
     string description;
-    string imageUrl;
+    string image;
     string externalUrl;
 }
 
@@ -120,12 +120,12 @@ contract RadicaTag is Ownable {
     //         );
     //     }
     //
-    //     if (!_isEmptyStr(metadata.imageUrl)) {
+    //     if (!_isEmptyStr(metadata.image)) {
     //         metadataStr = string(
     //             abi.encodePacked(
     //                 metadataStr,
     //                 '"image":"',
-    //                 metadata.imageUrl,
+    //                 metadata.image,
     //                 '",'
     //             )
     //         );
