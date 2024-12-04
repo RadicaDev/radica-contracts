@@ -1,8 +1,11 @@
 import { NFC } from "nfc-pcsc";
-import { clearLines, getAddressFromUID, logger } from "./utils";
+import {
+  clearLines,
+  getAddressFromUID,
+  logger,
+  getMetadataFromInput,
+} from "./utils";
 import hre from "hardhat";
-import { Metadata } from "./tag-meta";
-import { getMetadataFromInput } from "./utils/getMetadataFromInput";
 import { randomBytes } from "crypto";
 import { keccak256 } from "viem";
 
@@ -35,17 +38,8 @@ async function createTags() {
         return;
       }
 
-      const metadataFromInput = await getMetadataFromInput();
+      const metadata = await getMetadataFromInput();
       clearLines(5);
-
-      const metadata = new Metadata();
-      let metadataUri: string;
-      try {
-        metadataUri = metadata.format(metadataFromInput);
-      } catch (error) {
-        logger.error("Error generating metadata", error);
-        process.exit(-1);
-      }
 
       const proof = randomBytes(32);
       const proofHash = keccak256(proof);
@@ -72,7 +66,7 @@ async function createTags() {
         // Mint NFT Tag
         console.log("");
 
-        logger.info("Minting NFT Tag");
+        logger.info("Creating Tag");
         const chainId = !hre.network.config.chainId
           ? 31337
           : hre.network.config.chainId;
@@ -80,11 +74,14 @@ async function createTags() {
         const radicaTagAddr = require(
           `../ignition/deployments/chain-${chainId}/deployed_addresses`,
         )["RadicaTagModule#RadicaTag"];
-        const radicaTag = await hre.viem.getContractAt("RadicaTag", radicaTagAddr);
+        const radicaTag = await hre.viem.getContractAt(
+          "RadicaTag",
+          radicaTagAddr,
+        );
 
         // check that tag does not already exist
-        const balance = await radicaTag.read.balanceOf([tagAddr]);
-        if (balance > 0) {
+        const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
+        if (cert[0] != 0n) {
           logger.error("Tag already initialized", reader);
           console.log("Please remove the tag from the reader...");
           return;
@@ -92,7 +89,7 @@ async function createTags() {
 
         const tx = await radicaTag.write.createTag([
           tagAddr,
-          metadataUri,
+          metadata,
           proofHash,
         ]);
 

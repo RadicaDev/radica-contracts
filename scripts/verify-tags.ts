@@ -1,7 +1,6 @@
 import { NFC } from "nfc-pcsc";
 import { clearLines, getAddressFromUID, logger } from "./utils";
 import hre from "hardhat";
-import { Metadata } from "./tag-meta";
 
 async function verifyTags() {
   console.log("Please connect a NFC reader...");
@@ -47,24 +46,16 @@ async function verifyTags() {
             radicaTagAddr,
           );
 
-          const balance = await radicaTag.read.balanceOf([tagAddr]);
-          if (balance === 0n) {
+          const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
+          if (cert[0] === 0n) {
             logger.error(`Tag NOT verified`);
-            console.log("Please remove the tag from the reader...");
-            return;
+            process.exit(-1);
           }
 
-          const tokenId = await radicaTag.read.tokenOfOwnerByIndex([
-            tagAddr,
-            0n,
-          ]);
+          const certId = cert[0].toString(16);
+          const metadata = cert[1];
 
-          const tokenURI = await radicaTag.read.tokenURI([tokenId]);
-
-          const metadata = new Metadata();
-          const metadataJson = metadata.parse(tokenURI);
-
-          logger.info("Tag Verified!", metadataJson);
+          logger.info("Tag Verified!", certId, metadata);
           console.log("Remove the tag from the reader...");
         } catch (error) {
           logger.error(`error verifying the tag`);

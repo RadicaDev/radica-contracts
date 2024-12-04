@@ -9,10 +9,10 @@
  */
 export type MetadataType = {
   id: string;
-  description?: string;
-  external_url?: string;
-  image?: string;
-  name?: string;
+  description: string;
+  externalUrl: string;
+  image: string;
+  name: string;
 };
 
 /**

@@ -5,7 +5,6 @@ import {
   getMetadataFromInput,
   getAddressFromUID,
 } from "./utils";
-import { Metadata } from "./tag-meta";
 import hre from "hardhat";
 import { randomBytes } from "crypto";
 import { keccak256 } from "viem";
@@ -38,17 +37,8 @@ async function createTag() {
         process.exit(-1);
       }
 
-      const metadataFromInput = await getMetadataFromInput();
+      const metadata = await getMetadataFromInput();
       clearLines(5);
-
-      const metadata = new Metadata();
-      let metadataUri: string;
-      try {
-        metadataUri = metadata.format(metadataFromInput);
-      } catch (error) {
-        logger.error("Error generating metadata", error);
-        process.exit(-1);
-      }
 
       const proof = randomBytes(32);
       const proofHash = keccak256(proof);
@@ -74,7 +64,7 @@ async function createTag() {
         // Mint NFT Tag
         console.log("");
 
-        logger.info("Minting NFT Tag");
+        logger.info("Creating Tag");
         const chainId = !hre.network.config.chainId
           ? 31337
           : hre.network.config.chainId;
@@ -82,11 +72,14 @@ async function createTag() {
         const radicaTagAddr = require(
           `../ignition/deployments/chain-${chainId}/deployed_addresses`,
         )["RadicaTagModule#RadicaTag"];
-        const radicaTag = await hre.viem.getContractAt("RadicaTag", radicaTagAddr);
+        const radicaTag = await hre.viem.getContractAt(
+          "RadicaTag",
+          radicaTagAddr,
+        );
 
         const tx = await radicaTag.write.createTag([
           tagAddr,
-          metadataUri,
+          metadata,
           proofHash,
         ]);
 
