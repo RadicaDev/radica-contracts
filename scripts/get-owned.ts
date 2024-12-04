@@ -1,7 +1,5 @@
 import { logger } from "./utils";
 import hre from "hardhat";
-import { getAddress } from "viem";
-import { Metadata } from "./tag-meta";
 
 async function getOwned() {
   logger.info("Getting owned NFC");
@@ -26,25 +24,23 @@ async function getOwned() {
   );
 
   const ownedTokenIds = [];
-  let ownerSupply = await radicaProperty.read.balanceOf([owner.account.address]);
+  let ownerSupply = await radicaProperty.read.balanceOf([
+    owner.account.address,
+  ]);
   let index = 0n;
-
-  while (ownerSupply > 0) {
-    const _owner = await radicaProperty.read.ownerOf([index]);
-    if (_owner === getAddress(owner.account.address)) {
-      ownedTokenIds.push(index);
-      ownerSupply -= 1n;
-    }
-
-    index += 1n;
+  for (let i = 0; i < ownerSupply; i++) {
+    const tokenId = await radicaProperty.read.tokenOfOwnerByIndex([
+      owner.account.address,
+      index,
+    ]);
+    ownedTokenIds.push(tokenId);
+    index++;
   }
 
-  const metadata = new Metadata();
-
   for (const tokenId of ownedTokenIds) {
-    const tokenURI = await radicaTag.read.tokenURI([tokenId]);
-    const metadataJson = metadata.parse(tokenURI);
-    logger.info(`Token ID: ${tokenId}`, metadataJson);
+    const tagAddr: `0x${string}` = `0x${(tokenId % 2n ** 160n).toString(16)}`;
+    const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
+    logger.info(`Token ID: ${tokenId}`, cert[1]);
   }
 }
 

@@ -44,14 +44,6 @@ async function claimProperty() {
           ? 31337
           : hre.network.config.chainId;
 
-        const radicaTagAddr = require(
-          `../ignition/deployments/chain-${chainId}/deployed_addresses`,
-        )["RadicaTagModule#RadicaTag"];
-        const radicaTag = await hre.viem.getContractAt(
-          "RadicaTag",
-          radicaTagAddr,
-        );
-
         const radicaPropertyAddr = require(
           `../ignition/deployments/chain-${chainId}/deployed_addresses`,
         )["RadicaTagModule#RadicaProperty"];
@@ -60,15 +52,19 @@ async function claimProperty() {
           radicaPropertyAddr,
         );
 
-        const tokenId = await radicaTag.read.tokenOfOwnerByIndex([
-          tagAddr as `0x${string}`,
-          0n,
-        ]);
+        const [radica] = await hre.viem.getWalletClients();
+        const radicaAddr = radica.account.address;
+
+        const radicaAddressBigInt = BigInt(radicaAddr);
+        const tagAddressBigInt = BigInt(tagAddr);
+
+        const radicaFP = radicaAddressBigInt >> 64n;
+
+        const tokenId = (radicaFP << 160n) | tagAddressBigInt;
 
         const tx = await radicaProperty.write.claimProperty([
           tokenId,
           proof as `0x${string}`,
-          `Property of ${tokenId.toString()}`,
         ]);
 
         const publicClinet = await hre.viem.getPublicClient();
