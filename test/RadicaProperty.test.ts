@@ -42,14 +42,26 @@ describe("RadicaProperty", function () {
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
-      const uri = "test uri";
+      const metadata = {
+        id: "1",
+        name: "test",
+        description: "test description",
+        imageUrl: "https://testimageurl.com",
+        externalUrl: "https://testexternalurl.com",
+      };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const proofHash = keccak256(proof);
 
-      await radicaTag.write.createTag([tagAddr, uri, proofHash]);
+      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
 
-      const tokenId = await radicaTag.read.tokenOfOwnerByIndex([tagAddr, 0n]);
-      await radicaProperty.write.claimProperty([tokenId, proof, uri]);
+      const ownerAddrBigInt = BigInt(ownerAddr);
+      const tagAddrBigInt = BigInt(tagAddr);
+
+      const ownerFP = ownerAddrBigInt >> 64n;
+
+      const tokenId = (ownerFP << 160n) | tagAddrBigInt;
+
+      await radicaProperty.write.claimProperty([tokenId, proof]);
 
       expect(await radicaProperty.read.balanceOf([ownerAddr])).to.equal(1n);
       expect(await radicaProperty.read.ownerOf([tokenId])).to.equal(
@@ -58,21 +70,35 @@ describe("RadicaProperty", function () {
     });
 
     it("Should fail if an invalid proof is provided", async function () {
-      const { radicaTag, radicaProperty, tag } = await loadFixture(
+      const { radicaTag, radicaProperty, tag, owner } = await loadFixture(
         deployRadicaPropertyFixture,
       );
 
+      const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
-      const uri = "test uri";
+      const metadata = {
+        id: "1",
+        name: "test",
+        description: "test description",
+        imageUrl: "https://testimageurl.com",
+        externalUrl: "https://testexternalurl.com",
+      };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const wrongProof =
         `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const proofHash = keccak256(proof);
 
-      await radicaTag.write.createTag([tagAddr, uri, proofHash]);
+      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
 
-      const tokenId = await radicaTag.read.tokenOfOwnerByIndex([tagAddr, 0n]);
-      expect(radicaProperty.write.claimProperty([tokenId, wrongProof, uri])).to
+      const ownerAddrBigInt = BigInt(ownerAddr);
+      const tagAddrBigInt = BigInt(tagAddr);
+
+      const ownerFP = ownerAddrBigInt >> 64n;
+
+      const tokenId = (ownerFP << 160n) | tagAddrBigInt;
+
+      await radicaProperty.write.claimProperty([tokenId, proof]);
+      expect(radicaProperty.write.claimProperty([tokenId, wrongProof])).to
         .rejected;
     });
   });

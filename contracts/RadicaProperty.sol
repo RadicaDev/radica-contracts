@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title RadicaProperty
@@ -13,6 +14,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @notice Contract implementation to manage Radica Property NFTs
  */
 contract RadicaProperty is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+    using Strings for uint256;
+
     mapping(uint256 => bytes32) private _tokenIdToProofHash;
 
     /**
@@ -47,17 +50,19 @@ contract RadicaProperty is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
      * @notice Claims the property for the tag
      *
      * @param tokenId The ID of the token to be claimed
-     * @param uri The URI to be associated with the tag
      */
-    function claimProperty(
-        uint256 tokenId,
-        bytes32 proof,
-        string memory uri
-    ) public {
+    function claimProperty(uint256 tokenId, bytes32 proof) public {
         // check proof is valid
         require(
             _tokenIdToProofHash[tokenId] == keccak256(abi.encode(proof)),
             "Invalid proof"
+        );
+
+        string memory uri = string(
+            abi.encodePacked(
+                "Property of Tag with CertId: ",
+                tokenId.toHexString()
+            )
         );
 
         _safeMint(msg.sender, tokenId);
