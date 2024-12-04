@@ -27,6 +27,30 @@ describe("RadicaTag", function () {
   });
 
   describe("Tag Creation", function () {
+    it.only("Should create a tag", async function () {
+      const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
+
+      const tagAddr = tag.account.address;
+      const metadata = {
+        id: "1",
+        name: "test",
+        description: "test description",
+        imageUrl: "ciao",
+        externalUrl: "",
+      };
+      const proofHash =
+        `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
+
+      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+
+      expect(await radicaTag.read.balanceOf([tagAddr])).to.equal(1n);
+
+      const uri = await radicaTag.read.tokenURI([0n]);
+      console.log(uri);
+      console.log(
+        JSON.parse(Buffer.from(uri.slice(29), "base64").toString("utf-8")),
+      );
+    });
     it("Should create a tag", async function () {
       const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
@@ -69,7 +93,9 @@ describe("RadicaTag", function () {
 
   describe("Transfer", function () {
     it("Should revert when transferring a tag", async function () {
-      const { radicaTag, owner, tag } = await loadFixture(deployRadicaTagFixture);
+      const { radicaTag, owner, tag } = await loadFixture(
+        deployRadicaTagFixture,
+      );
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
