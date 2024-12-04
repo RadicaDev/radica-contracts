@@ -3,7 +3,6 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
@@ -30,7 +29,6 @@ struct Certificate {
  */
 contract RadicaTag is Ownable {
     using Strings for string;
-    using Base64 for bytes;
 
     address public radicaPropertyAddr;
     uint256 private _nextTokenId;
@@ -95,77 +93,4 @@ contract RadicaTag is Ownable {
 
         return (issuerFP << 160) | tagAddrUint;
     }
-
-    // function _serializaMetadata(
-    //     Metadata memory metadata
-    // ) private pure returns (string memory metadataStr) {
-    //     require(!_isEmptyStr(metadata.id), "ID cannot be empty");
-    //
-    //     metadataStr = "{";
-    //
-    //     if (!_isEmptyStr(metadata.name)) {
-    //         metadataStr = string(
-    //             abi.encodePacked(metadataStr, '"name":"', metadata.name, '",')
-    //         );
-    //     }
-    //
-    //     if (!_isEmptyStr(metadata.description)) {
-    //         metadataStr = string(
-    //             abi.encodePacked(
-    //                 metadataStr,
-    //                 '"description":"',
-    //                 metadata.description,
-    //                 '",'
-    //             )
-    //         );
-    //     }
-    //
-    //     if (!_isEmptyStr(metadata.image)) {
-    //         metadataStr = string(
-    //             abi.encodePacked(
-    //                 metadataStr,
-    //                 '"image":"',
-    //                 metadata.image,
-    //                 '",'
-    //             )
-    //         );
-    //     }
-    //
-    //     if (!_isEmptyStr(metadata.externalUrl)) {
-    //         metadataStr = string(
-    //             abi.encodePacked(
-    //                 metadataStr,
-    //                 '"external_url":"',
-    //                 metadata.externalUrl,
-    //                 '",'
-    //             )
-    //         );
-    //     }
-    //
-    //     metadataStr = string(
-    //         abi.encodePacked(
-    //             metadataStr,
-    //             '"attributes":[{"trait_type":"ID","value":"',
-    //             metadata.id,
-    //             '"}]}'
-    //         )
-    //     );
-    // }
-    //
-    // function _formatURI(
-    //     string memory metadata
-    // ) private pure returns (string memory) {
-    //     return
-    //         string(
-    //             abi.encodePacked(
-    //                 "data:application/json;base64,",
-    //                 Base64.encode(bytes(metadata))
-    //             )
-    //         );
-    // }
-    //
-    // function _isEmptyStr(string memory str) private pure returns (bool) {
-    //     return bytes(str).length == 0;
-    // }
 }
-

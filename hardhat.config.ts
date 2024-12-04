@@ -7,7 +7,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {},
     oracle: {
-      url: "https://radica.dev:8545",
+      url: "https://hardhat.radica.dev",
     },
   },
 };
