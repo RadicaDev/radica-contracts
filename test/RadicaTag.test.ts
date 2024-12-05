@@ -3,6 +3,11 @@ import hre from "hardhat";
 import { expect } from "chai";
 import { getAddress } from "viem";
 
+import {
+  exampleMetadata,
+  exampleTracebilityMetadata,
+} from "./utils/example-metadata";
+
 describe("RadicaTag", function () {
   async function deployRadicaTagFixture() {
     const [owner, tag] = await hre.viem.getWalletClients();
@@ -31,17 +36,15 @@ describe("RadicaTag", function () {
       const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([
+        tagAddr,
+        exampleMetadata,
+        exampleTracebilityMetadata,
+        proofHash,
+      ]);
 
       const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
       expect(cert[0]).not.to.equal(0n);
@@ -54,17 +57,15 @@ describe("RadicaTag", function () {
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([
+        tagAddr,
+        exampleMetadata,
+        exampleTracebilityMetadata,
+        proofHash,
+      ]);
 
       const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
       const certId = cert[0];
@@ -83,46 +84,53 @@ describe("RadicaTag", function () {
       const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([
+        tagAddr,
+        exampleMetadata,
+        exampleTracebilityMetadata,
+        proofHash,
+      ]);
 
       const cert = await radicaTag.read.tagAddrToCert([tagAddr]);
       const metadataFromContract = cert[1];
+      const tracebilityMetadataFromContract = cert[2];
 
-      expect(metadata.id).to.equal(metadataFromContract.id);
-      expect(metadata.name).to.equal(metadataFromContract.name);
-      expect(metadata.description).to.equal(metadataFromContract.description);
-      expect(metadata.image).to.equal(metadataFromContract.image);
-      expect(metadata.externalUrl).to.equal(metadataFromContract.externalUrl);
+      expect(exampleMetadata.serialNumber).to.equal(
+        metadataFromContract.serialNumber,
+      );
+      expect(exampleMetadata.name).to.equal(metadataFromContract.name);
+      expect(exampleMetadata.description).to.equal(
+        metadataFromContract.description,
+      );
+      expect(exampleMetadata.image).to.equal(metadataFromContract.image);
+      expect(exampleMetadata.manufacturer).to.equal(
+        metadataFromContract.manufacturer,
+      );
+      expect(exampleMetadata.externalUrl).to.equal(
+        metadataFromContract.externalUrl,
+      );
+      expect(exampleTracebilityMetadata.batchId).to.equal(
+        tracebilityMetadataFromContract.batchId,
+      );
+      expect(exampleTracebilityMetadata.supplierChainHash).to.equal(
+        tracebilityMetadataFromContract.supplierChainHash,
+      );
     });
 
     it("Should revert if the tag has already been used", async function () {
       const { radicaTag, tag } = await loadFixture(deployRadicaTagFixture);
 
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proofHash =
         `0x${Buffer.allocUnsafe(32).fill(1).toString("hex")}` as `0x${string}`;
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([tagAddr, exampleMetadata, proofHash]);
 
-      expect(radicaTag.write.createTag([tagAddr, metadata, proofHash])).to
-        .rejected;
+      expect(radicaTag.write.createTag([tagAddr, exampleMetadata, proofHash]))
+        .to.rejected;
     });
   });
 });

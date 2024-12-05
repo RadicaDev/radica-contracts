@@ -10,16 +10,23 @@ import "@openzeppelin/contracts/utils/Strings.sol";
  * @notice Struct to store metadata for a tag
  */
 struct Metadata {
-    string id;
+    string serialNumber;
     string name;
     string description;
     string image;
+    string manufacturer;
     string externalUrl;
+}
+
+struct TracebilityMetadata {
+    string batchId;
+    string supplierChainHash;
 }
 
 struct Certificate {
     uint256 id;
     Metadata metadata;
+    TracebilityMetadata tracebilityMetadata;
 }
 
 /**
@@ -65,12 +72,29 @@ contract RadicaTag is Ownable {
         Metadata memory metadata,
         bytes32 proofHash
     ) public onlyOwner {
+        TracebilityMetadata memory tracebilityMetadata = TracebilityMetadata({
+            batchId: "",
+            supplierChainHash: ""
+        });
+        createTag(tagAddr, metadata, tracebilityMetadata, proofHash);
+    }
+
+    function createTag(
+        address tagAddr,
+        Metadata memory metadata,
+        TracebilityMetadata memory tracebilityMetadata,
+        bytes32 proofHash
+    ) public onlyOwner {
         require(proofHash != 0, "Proof hash cannot be zero");
         require(tagAddrToCert[tagAddr].id == 0, "Tag already in use");
 
         uint256 certId = _deriveCertId(msg.sender, tagAddr);
 
-        tagAddrToCert[tagAddr] = Certificate({id: certId, metadata: metadata});
+        tagAddrToCert[tagAddr] = Certificate({
+            id: certId,
+            metadata: metadata,
+            tracebilityMetadata: tracebilityMetadata
+        });
 
         (bool success, ) = radicaPropertyAddr.call(
             abi.encodeWithSignature(

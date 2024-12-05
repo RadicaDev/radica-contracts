@@ -4,6 +4,8 @@ import { expect } from "chai";
 import { getAddress, keccak256 } from "viem";
 import { randomBytes } from "crypto";
 
+import { exampleMetadata } from "./utils/example-metadata";
+
 describe("RadicaProperty", function () {
   async function deployRadicaPropertyFixture() {
     const [owner, tag] = await hre.viem.getWalletClients();
@@ -42,17 +44,10 @@ describe("RadicaProperty", function () {
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const proofHash = keccak256(proof);
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([tagAddr, exampleMetadata, proofHash]);
 
       const ownerAddrBigInt = BigInt(ownerAddr);
       const tagAddrBigInt = BigInt(tagAddr);
@@ -76,19 +71,12 @@ describe("RadicaProperty", function () {
 
       const ownerAddr = owner.account.address;
       const tagAddr = tag.account.address;
-      const metadata = {
-        id: "1",
-        name: "test",
-        description: "test description",
-        image: "https://testimageurl.com",
-        externalUrl: "https://testexternalurl.com",
-      };
       const proof = `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const wrongProof =
         `0x${randomBytes(32).toString("hex")}` as `0x${string}`;
       const proofHash = keccak256(proof);
 
-      await radicaTag.write.createTag([tagAddr, metadata, proofHash]);
+      await radicaTag.write.createTag([tagAddr, exampleMetadata, proofHash]);
 
       const ownerAddrBigInt = BigInt(ownerAddr);
       const tagAddrBigInt = BigInt(tagAddr);

@@ -1,18 +1,14 @@
+import { MetadataType, TracebilityMetadataType } from "../../types/Certificate";
 import inquirer from "inquirer";
-import { MetadataType } from "../tag-meta";
 
-export async function getMetadataFromInput(): Promise<MetadataType> {
+export async function getMetadataFromInput(): Promise<
+  [MetadataType, TracebilityMetadataType]
+> {
   const questions = [
     {
       type: "input",
-      name: "id",
-      message: "Enter the ID (required):",
-      validate: (input: string) => {
-        if (!input) {
-          return "ID is required!";
-        }
-        return true;
-      },
+      name: "serialNumber",
+      message: "Enter the serialNumber: (optional)",
     },
     {
       type: "input",
@@ -31,23 +27,41 @@ export async function getMetadataFromInput(): Promise<MetadataType> {
     },
     {
       type: "input",
-      name: "external_url",
+      name: "manufacturer",
+      message: "Enter the manufacturer (optional):",
+    },
+    {
+      type: "input",
+      name: "externalUrl",
       message: "Enter the external URL (optional):",
+    },
+    {
+      type: "input",
+      name: "batchId",
+      message: "Enter the batch ID (optional):",
+    },
+    {
+      type: "input",
+      name: "supplierChainHash",
+      message: "Enter the Supplier Chain Hash (optional):",
     },
   ];
 
+  // @ts-ignore
   const answers = await inquirer.prompt(questions);
 
-  // Return the metadata object using the user's input
-  const metadata: MetadataType = Object.entries(answers).reduce(
-    (obj, [key, value]) => {
-      if (value !== undefined && value !== "") {
-        obj[key as keyof MetadataType] = value;
-      }
-      return obj;
+  return [
+    {
+      serialNumber: answers.serialNumber,
+      name: answers.name,
+      description: answers.description,
+      image: answers.image,
+      manufacturer: answers.manufacturer,
+      externalUrl: answers.externalUrl,
     },
-    {} as MetadataType,
-  );
-
-  return metadata;
+    {
+      batchId: answers.batchId,
+      supplierChainHash: answers.supplierChainHash,
+    },
+  ] as [MetadataType, TracebilityMetadataType];
 }

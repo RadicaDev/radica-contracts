@@ -47,8 +47,9 @@ async function verifyTag() {
 
           const certId = cert[0].toString(16);
           const metadata = cert[1];
+          const tracebilityMetadata = cert[2];
 
-          logger.info("Tag Verified!", certId, metadata);
+          logger.info("Tag Verified!", certId, metadata, tracebilityMetadata);
 
           process.exit(0);
         } catch (error) {

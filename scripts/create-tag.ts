@@ -37,8 +37,10 @@ async function createTag() {
         process.exit(-1);
       }
 
-      const metadata = await getMetadataFromInput();
-      clearLines(5);
+      const [metadata, tracebilityMetadata] = await getMetadataFromInput();
+      clearLines(8);
+      console.log("Metadata:", metadata);
+      console.log("Tracebility Metadata:", tracebilityMetadata);
 
       const proof = randomBytes(32);
       const proofHash = keccak256(proof);
@@ -80,6 +82,7 @@ async function createTag() {
         const tx = await radicaTag.write.createTag([
           tagAddr,
           metadata,
+          tracebilityMetadata,
           proofHash,
         ]);
 

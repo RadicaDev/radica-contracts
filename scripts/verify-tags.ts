@@ -54,8 +54,9 @@ async function verifyTags() {
 
           const certId = cert[0].toString(16);
           const metadata = cert[1];
+          const tracebilityMetadata = cert[2];
 
-          logger.info("Tag Verified!", certId, metadata);
+          logger.info("Tag Verified!", certId, metadata, tracebilityMetadata);
           console.log("Remove the tag from the reader...");
         } catch (error) {
           logger.error(`error verifying the tag`);
