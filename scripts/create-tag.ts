@@ -39,8 +39,6 @@ async function createTag() {
 
       const [metadata, tracebilityMetadata] = await getMetadataFromInput();
       clearLines(8);
-      console.log("Metadata:", metadata);
-      console.log("Tracebility Metadata:", tracebilityMetadata);
 
       const proof = randomBytes(32);
       const proofHash = keccak256(proof);
