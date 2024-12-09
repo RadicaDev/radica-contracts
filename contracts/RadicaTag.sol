@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
- * @title Metadata
- * @notice Struct to store metadata for a tag
+ * @title Certificate
+ * @notice Struct to store the certificate of a tag
  */
 struct Metadata {
     string serialNumber;
