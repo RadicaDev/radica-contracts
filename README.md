@@ -8,6 +8,9 @@ Radica is a project that aims to provide authentication for products using NFC a
 - NFC Reader (ACR122U)
 - NFC Tags (ISO 14443, Type 2, NFC Forum Type 2)
 
+> [!WARNING]
+> Node at version 23 has some incompatibilities with the nfc-pcsc library. Please use Node version 22 or lower.
+
 > **_Note:_** If you do not have an NFC Reader or NFC Tags, you can still run the project without them. You will not be able to test the NFC functionality, but you can still test the smart contracts.
 
 ## Installation
