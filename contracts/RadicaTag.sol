@@ -2,7 +2,6 @@
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.20;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
@@ -34,7 +33,7 @@ struct Certificate {
  * @author Francesco Laterza
  * @notice Contract implementation to manage Radica NFC tags
  */
-contract RadicaTag is Ownable {
+contract RadicaTag {
     using Strings for string;
 
     address public radicaPropertyAddr;
@@ -42,7 +41,7 @@ contract RadicaTag is Ownable {
 
     mapping(address => Certificate) public tagAddrToCert;
 
-    constructor() Ownable(msg.sender) {}
+    constructor() {}
 
     /**
      * @notice Sets the RadicaProperty contract address
@@ -71,7 +70,7 @@ contract RadicaTag is Ownable {
         address tagAddr,
         Metadata memory metadata,
         bytes32 proofHash
-    ) public onlyOwner {
+    ) public {
         TracebilityMetadata memory tracebilityMetadata = TracebilityMetadata({
             batchId: "",
             supplierChainHash: ""
@@ -84,7 +83,7 @@ contract RadicaTag is Ownable {
         Metadata memory metadata,
         TracebilityMetadata memory tracebilityMetadata,
         bytes32 proofHash
-    ) public onlyOwner {
+    ) public {
         require(proofHash != 0, "Proof hash cannot be zero");
         require(tagAddrToCert[tagAddr].id == 0, "Tag already in use");
 
