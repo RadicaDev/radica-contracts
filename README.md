@@ -32,9 +32,9 @@ npm install
 
 ## Usage
 
-### Deployment
+### Local Development
 
-#### Local Development
+#### Deployment
 
 To deploy the smart contracts to a local blockchain, use the following command.
 
@@ -50,7 +50,7 @@ In a new terminal, deploy the contracts to the local blockchain.
 npx hardhat ignition deploy ./ignition/modules/RadicaTag.ts --network localhost
 ```
 
-### Create a Tag
+#### Create a Tag
 
 Before creating a new tag, you need to initialize it. Be sure to have the cryptographic keys in the `./crypto-keys` folder.
 
@@ -75,7 +75,7 @@ npx hardhat run scripts/create-tag.ts --network localhost
 
 You can also use the `create-tags.ts` script to create multiple tags at once.
 
-### Verify a Tag
+#### Verify a Tag
 
 To verify a tag, use the following command.
 
@@ -85,7 +85,45 @@ npx hardhat run scripts/verify-tag.ts --network localhost
 
 You can also use the `verify-tags.ts` script to verify multiple tags at once.
 
-### Testing
+### Hedera Testnet
+
+To interact with the Hedera Testnet, you need to import your own private key. The private key should be stored in the `.env` file, you can create one from an example template like this:
+
+```bash
+cp .env.example .env
+```
+
+and then paste your private key in the `.env` file.
+
+#### Create a Tag
+
+Before creating a tag you should initialize the NFC tag.
+
+```bash
+npx hardhat run scripts/init-tags.ts
+```
+
+this script allow you to initialize multimple tags.
+
+To create a new tag, use the following command.
+
+```bash
+npx hardhat run scripts/create-tag.ts --network hederaTestnet
+```
+
+you can use the `create-tags.ts` script to create multiple tags at once.
+
+#### Verify a Tag
+
+To verify a tag, use the following command.
+
+```bash
+npx hardhat run scripts/verify-tag.ts --network hederaTestnet
+```
+
+you can use the `verify-tags.ts` script to verify multiple tags at once.
+
+## Testing
 
 To run the tests, use the following command.
 
