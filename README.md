@@ -95,6 +95,9 @@ cp .env.example .env
 
 and then paste your private key in the `.env` file.
 
+> [!NOTE]
+> You do not need to deploy the contracts on the Hedera Testnet, they are already deployed.
+
 #### Create a Tag
 
 Before creating a tag you should initialize the NFC tag.
