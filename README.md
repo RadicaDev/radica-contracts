@@ -8,6 +8,9 @@ Radica is a project that aims to provide authentication for products using NFC a
 - NFC Reader (ACR122U)
 - NFC Tags (ISO 14443, Type 2, NFC Forum Type 2)
 
+> [!WARNING]
+> Node at version 23 has some incompatibilities with the nfc-pcsc library. Please use Node version 22 or lower.
+
 > **_Note:_** If you do not have an NFC Reader or NFC Tags, you can still run the project without them. You will not be able to test the NFC functionality, but you can still test the smart contracts.
 
 ## Installation
@@ -26,15 +29,16 @@ cd radica-contracts
 ```
 
 Install the dependencies.
+
 ```bash
-npm install 
+npm install
 ```
 
 ## Usage
 
-### Deployment
+### Local Development
 
-#### Local Development
+#### Deployment
 
 To deploy the smart contracts to a local blockchain, use the following command.
 
@@ -50,19 +54,22 @@ In a new terminal, deploy the contracts to the local blockchain.
 npx hardhat ignition deploy ./ignition/modules/RadicaTag.ts --network localhost
 ```
 
-### Create a Tag
+#### Create a Tag
 
 Before creating a new tag, you need to initialize it. Be sure to have the cryptographic keys in the `./crypto-keys` folder.
 
 Run the following command to create the keys.
+
 ```bash
 node init-keys.cjs
 ```
 
 Run the following command to initialize the tags.
+
 ```bash
 npx hardhat run scripts/init-tags.ts
 ```
+
 Exit with `Ctrl + C` when you have initialized all the tags.
 
 > **_Note:_** The `init-tags.ts` is needed since we are not using the official NFC tags. In order to make this tool accessible to everyone, we use standard NFC tags and we simulate the signature verification process.
@@ -75,7 +82,7 @@ npx hardhat run scripts/create-tag.ts --network localhost
 
 You can also use the `create-tags.ts` script to create multiple tags at once.
 
-### Verify a Tag
+#### Verify a Tag
 
 To verify a tag, use the following command.
 
@@ -85,7 +92,7 @@ npx hardhat run scripts/verify-tag.ts --network localhost
 
 You can also use the `verify-tags.ts` script to verify multiple tags at once.
 
-### Testing
+## Testing
 
 To run the tests, use the following command.
 
