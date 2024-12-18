@@ -11,7 +11,8 @@ Radica is a project that aims to provide authentication for products using NFC a
 > [!WARNING]
 > Node at version 23 has some incompatibilities with the nfc-pcsc library. Please use Node version 22 or lower.
 
-> **_Note:_** If you do not have an NFC Reader or NFC Tags, you can still run the project without them. You will not be able to test the NFC functionality, but you can still test the smart contracts.
+> [!NOTE]
+> If you do not have an NFC Reader or NFC Tags, you can still run the project without them. You will not be able to test the NFC functionality, but you can still test the smart contracts.
 
 ## Installation
 
@@ -45,7 +46,8 @@ To deploy the smart contracts to a local blockchain, use the following command.
 npx hardhat node --hostname 0.0.0.0
 ```
 
-> **_Note:_** The `--hostname` flag is used to allow connections from other devices on the network. If you do not want to use the mobile app, you can omit this flag.
+> [!NOTE]
+> The `--hostname` flag is used to allow connections from other devices on the network. If you do not want to use the mobile app, you can omit this flag.
 
 In a new terminal, deploy the contracts to the local blockchain.
 
@@ -68,7 +70,8 @@ npx hardhat run scripts/init-tags.ts
 ```
 Exit with `Ctrl + C` when you have initialized all the tags.
 
-> **_Note:_** The `init-tags.ts` is needed since we are not using the official NFC tags. In order to make this tool accessible to everyone, we use standard NFC tags and we simulate the signature verification process.
+> [!NOTE]
+> The `init-tags.ts` is needed since we are not using the official NFC tags. In order to make this tool accessible to everyone, we use standard NFC tags and we simulate the signature verification process.
 
 To create a new tag, use the following command.
 
